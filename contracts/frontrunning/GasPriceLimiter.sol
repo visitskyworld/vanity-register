@@ -4,7 +4,10 @@ pragma solidity ^0.8.0;
 import "../oracles/GasStation.sol";
 
 /**
- * @dev
+ * @dev This limits attackers from seeking preferential treatment from miners due to the higher gas price.
+ * The problem here is that such a solution must be constantly maintained as the gas price is very volatile.
+ * Therefore, it makes sense to use this solution together with an GasStation Oracle,
+ * the relevance of the values of which will be supported by the interested community.
  */
 contract GasPriceLimiter {
     GasStation public oracleGasStation;
