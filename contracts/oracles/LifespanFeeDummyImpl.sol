@@ -19,19 +19,28 @@ contract LifespanFeeDummyImpl is LifespanFee, Ownable {
     function setFeePerByte(uint256 fee) external
         onlyOwner
     {
-        require(fee > 0, "fee cannot be zero");
+        require(fee > 0, "LifespanFee: fee cannot be zero");
         feePerByte = fee;
     }
 
     function setFeePerSecond(uint256 fee) external
         onlyOwner
     {
-        require(fee > 0, "fee cannot be zero");
+        require(fee > 0, "LifespanFee: fee cannot be zero");
         feePerSecond = fee;
     }
 
-    function lifespan(uint256 length, uint256 value) override external view returns (uint256)
+    function estimate(uint256 length, uint256 time) override external view
+        returns (uint256)
     {
+        require(length > 0, "LifespanFee: length cannot be zero");
+        return time.mul(length).mul(feePerByte).mul(feePerSecond);
+    }
+
+    function lifespan(uint256 length, uint256 value) override external view
+        returns (uint256)
+    {
+        require(length > 0, "LifespanFee: length cannot be zero");
         uint256 fee = length.mul(feePerByte).mul(feePerSecond);
         return value.div(fee);
     }

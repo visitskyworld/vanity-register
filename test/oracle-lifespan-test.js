@@ -1,7 +1,7 @@
 const { expect } = require('chai')
 const { ethers } = require('hardhat')
 
-describe('LifespanFee', function () {
+describe('LifespanFee', () => {
   let lifespanFee
   let owner, addr1
 
@@ -13,7 +13,7 @@ describe('LifespanFee', function () {
     await lifespanFee.deployed()
   })
 
-  it('Should return new fee parameters after changing them', async function () {
+  it('Should return new fee parameters after changing them', async () => {
     expect(await lifespanFee.feePerByte()).to.equal(2)
     const setFeePerByteTx = await lifespanFee.setFeePerByte(5)
     await setFeePerByteTx.wait()
@@ -25,10 +25,17 @@ describe('LifespanFee', function () {
     expect(await lifespanFee.feePerSecond()).to.equal(2)
   })
 
-  it('Should transfer ownership', async function () {
+  it('Should transfer ownership', async () => {
     expect(await lifespanFee.owner()).to.equal(owner.address)
     const transferOwnershipTx = await lifespanFee.transferOwnership(addr1.address)
     await transferOwnershipTx.wait()
     expect(await lifespanFee.owner()).to.equal(addr1.address)
+  })
+
+  it('Should calculate the lifespan value correctly', async () => {
+    const length = 7
+    const seconds = 1000
+    const value = await lifespanFee.estimate(length, seconds)
+    expect(await lifespanFee.lifespan(length, value)).to.equal(seconds)
   })
 })
