@@ -5,6 +5,10 @@ import "../3dparty/SafeMath.sol";
 import "../3dparty/Ownable.sol";
 import "./LifespanFee.sol";
 
+/**
+ * @dev The simplest implementation of a LifespanFee Oracle, where the values
+ * are set by the the owner of the contract.
+ */
 contract LifespanFeeDummyImpl is LifespanFee, Ownable {
     /**
      * NOTE: Since Solidity 0.8 `SafeMath` is not necessary,

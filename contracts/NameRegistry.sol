@@ -4,6 +4,10 @@ pragma solidity ^0.8.0;
 import "./RecordRegistry.sol";
 import "./oracles/LifespanFee.sol";
 
+/**
+ * @dev The simplest application implementation of the name registry,
+ * where data is any string value and the record key - the hash of this data.
+ */
 contract NameRegistry is RecordRegistry {
 
     constructor(LifespanFee addrLifespanFee)

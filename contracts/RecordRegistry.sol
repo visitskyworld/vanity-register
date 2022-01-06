@@ -4,6 +4,14 @@ pragma solidity ^0.8.0;
 import "./3dparty/SafeMath.sol";
 import "./oracles/LifespanFee.sol";
 
+/**
+ * @dev The basic contract of a records register, where the key is a 32-byte digest and the value
+ * is an object with the characteristics of this record and string data. To register a record,
+ * you need pass the record label, balance to lock, and data as a string. The lifespan is calculated
+ * according to the rules specified in the LifespanFee Oracle and directly depends on the
+ * size of the data and the locked balance. After the expiration of the record lifespan,
+ * it can be renewed and the balance will be left locked.
+ */
 abstract contract RecordRegistry {
     /**
      * NOTE: Since Solidity 0.8 `SafeMath` is not necessary,
@@ -27,7 +35,7 @@ abstract contract RecordRegistry {
 
     LifespanFee public oracleLifespanFee;
     mapping (bytes32 => Record) public records;
-    uint256 public renewThreshold = 20 seconds;
+    uint256 public renewThreshold = 20 seconds; // hardcoded for a given implementation
 
     constructor(LifespanFee addrLifespanFee)
     {

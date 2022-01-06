@@ -6,6 +6,10 @@ import "./oracles/LifespanFee.sol";
 import "./frontrunning/Authorization.sol";
 import "./frontrunning/GasPriceLimiter.sol";
 
+/**
+ * @dev The inheritor of the Name Registry, contains frontrunning-resistant functions for registering new names.
+ * Read more about frontrunning protection methods in the corresponding package.
+ */
 contract ProtectedNameRegistry is NameRegistry, Authorization, GasPriceLimiter {
 
     constructor(LifespanFee addrLifespanFee, GasStation addrGasStation)

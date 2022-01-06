@@ -5,6 +5,11 @@ import "./RecordRegistry.sol";
 import "./oracles/LifespanFee.sol";
 import "./utils/StringUtils.sol";
 
+/**
+ * @dev Implementation of the address register, where the data is an Ethereum address without "0x"
+ * consisting of 40 characters and corresponding to the HEX alphabet.
+ * The record key is a hash of any string selected as a key.
+ */
 contract AddressRegistry is RecordRegistry {
     using StringUtils for string;
 
