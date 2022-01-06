@@ -36,7 +36,7 @@ contract NameRegistry is RecordRegistry {
         return oracleLifespanFee.estimate(length, time);
     }
 
-    function registerName(string calldata name) external payable
+    function registerName(string calldata name) virtual external payable
     {
         _registerRecord(getRecordLabel(name), msg.value, name);
     }
