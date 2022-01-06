@@ -27,6 +27,7 @@ abstract contract RecordRegistry {
 
     LifespanFee public oracleLifespanFee;
     mapping (bytes32 => Record) public records;
+    uint256 public renewThreshold = 20 seconds;
 
     constructor(LifespanFee addrLifespanFee)
     {
@@ -34,12 +35,12 @@ abstract contract RecordRegistry {
     }
 
     modifier onlyExistingRecord (bytes32 label) {
-        require(_isRecordExists(label), "the record does not exist");
+        require(_isRecordExists(label), "RecordRegistry: the record does not exist");
         _;
     }
 
     modifier onlyRecordOwner(bytes32 label) {
-        require(records[label].owner == msg.sender, "the caller is not the owner of the record");
+        require(records[label].owner == msg.sender, "RecordRegistry: the caller is not the owner of the record");
         _;
     }
 
@@ -66,7 +67,7 @@ abstract contract RecordRegistry {
 
         uint256 length = bytes(data).length;
         uint256 lifespan = oracleLifespanFee.lifespan(length, value);
-        require(lifespan > 0, "insufficient funds transferred, record lifespan is zero");
+        require(lifespan > 0, "RecordRegistry: insufficient funds transferred, record lifespan is zero");
 
         Record storage record = records[label];
         record.owner = msg.sender;
@@ -85,7 +86,7 @@ abstract contract RecordRegistry {
         onlyExistingRecord(label)
         returns (Record memory)
     {
-        require(_isRecordExpired(label), "the record has not expired yet");
+        require(_isRecordExpired(label), "RecordRegistry: the record has not expired yet");
 
         Record memory record = records[label];
         delete records[label];
@@ -99,15 +100,12 @@ abstract contract RecordRegistry {
         onlyRecordOwner(label)
     {
         // Here is the simplest implementation to allow the owner of a record to renew it shortly before it expires.
-        // NOTE: The threshold can be specified as a contract field
-        // or placed in a separate contract where its value can be controlled,
+        // NOTE: Here the threshold is hardcoded as a contract field,
+        // but it can be placed in a separate contract where its value can be controlled,
         // for example, using a DAO.
-        // uint256 threshold = 1 hours;
-        uint256 threshold = 20 seconds;
-
         Record storage record = records[label];
-        uint256 expiresSoon = record.timestamp.add(record.lifespan).sub(threshold);
-        require(block.timestamp > expiresSoon, "the record cannot be renewed yet");
+        uint256 expiresSoon = record.timestamp.add(record.lifespan).sub(renewThreshold);
+        require(block.timestamp > expiresSoon, "RecordRegistry: the record cannot be renewed yet");
 
         record.timestamp = block.timestamp;
 
@@ -121,7 +119,7 @@ abstract contract RecordRegistry {
         onlyExistingRecord(label)
         onlyRecordOwner(label)
     {
-        require(newOwner != address(0), "new owner is the zero address");
+        require(newOwner != address(0), "RecordRegistry: new owner is the zero address");
 
         address oldOwner = records[label].owner;
         records[label].owner = newOwner;

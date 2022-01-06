@@ -29,6 +29,13 @@ contract NameRegistry is RecordRegistry {
         return _isRecordExpired(getRecordLabel(name));
     }
 
+    function estimateRegistrationFee(string calldata name, uint256 time) external view
+        returns (uint256)
+    {
+        uint256 length = bytes(name).length;
+        return oracleLifespanFee.estimate(length, time);
+    }
+
     function registerName(string calldata name) external payable
     {
         _registerRecord(getRecordLabel(name), msg.value, name);
